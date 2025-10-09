@@ -1,6 +1,6 @@
-# Simulador da Camada de Conectividade em Redes Mesh
+# Simulador da Camada NetMaintenance em Redes Mesh
 
-Este projeto implementa, em **Python 3.6+**, uma simulação da **Camada de Conectividade** baseada nos conceitos do protocolo **HyParView**.
+Este projeto implementa, em **Python 3.6+**, uma simulação da **NetMaintenance** baseada nos conceitos do protocolo **HyParView**.
 O objetivo é validar a modelagem da manutenção adaptativa da vizinhança (Active View e Passive View) em uma rede mesh, medindo **tempo médio de convergência** (em execuções), **diversidade da lista passiva** e **distribuição final da conectividade** a partir de ** múltiplas execuções experimentais **.
 
 ---
