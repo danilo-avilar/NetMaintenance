@@ -203,7 +203,7 @@ Após execução, são gerados:
 ---
 
 **Autor**
-Contato: daniloavilar@gmail.com
+Contato: danilo.avilar@ifce.edu.br
 Versão: 11.0
 Data: 08-10-2025
 Licença: MIT
