@@ -1,11 +1,143 @@
 # Simulador da Camada NetMaintenance em Redes Mesh
 
-Este projeto implementa, em **Python 3.6+**, uma simulação da **NetMaintenance** baseada nos conceitos do protocolo **HyParView**.
-O objetivo é validar a modelagem da manutenção adaptativa da vizinhança (Active View e Passive View) em uma rede mesh, medindo **tempo médio de convergência** (em execuções), **diversidade da lista passiva** e **distribuição final da conectividade** a partir de ** múltiplas execuções experimentais **.
+---
+
+## Resumo do Artefato
+
+Este repositório disponibiliza o artefato computacional associado ao artigo:
+
+**“Modelagem e Avaliação de uma Camada de Conectividade Adaptativa para Atualizações OTA em Redes Mesh IoT”**
+
+O artefato consiste em um **simulador em Python** da camada **NetMaintenance**, inspirada no protocolo **HyParView**, responsável pela manutenção adaptativa da vizinhança lógica de uma rede mesh de dispositivos embarcados.  
+O objetivo principal é **validar experimentalmente** a capacidade da camada em:
+
+- manter conectividade lógica sob falhas,
+- promover diversidade estrutural via *shuffle* da lista passiva,
+- alcançar rápida convergência da vizinhança ativa,
+
+conforme as **reivindicações apresentadas no artigo**.
 
 ---
 
-## Descrição Geral
+## Estrutura do README.md
+
+Este README está organizado da seguinte forma:
+
+1. Estrutura do Repositório
+2. Selos Considerados
+3. Informações Básicas
+4. Dependências
+5. Preocupações com Segurança
+6. Instalação
+7. Teste Mínimo
+8. Experimentos e Reivindicações
+9. Licença
+
+---
+
+## 1. Estrutura do Repositório
+
+```
+  .
+  ├── Exemplo de resultados/ # Diretórios contendo exemplo de resultados já gerados
+  ├── LICENSE # Licença de software
+  ├── README.md # Documentação do artefato
+  ├── analysis.py # Consolidação e análise estatística dos resultados
+  ├── run.py # Execução automatizada de múltiplos cenários experimentais
+  └── sc.py # Simulador principal da camada NetMaintenance
+
+```
+Durante a execução, são criados diretórios e arquivos de saída contendo resultados experimentais, conforme descrito nas seções posteriores.
+
+---
+
+## 2. Selos Considerados
+
+Os selos considerados para avaliação deste artefato são:
+
+- **Artefatos Disponíveis (SeloD)**
+- **Artefatos Funcionais (SeloF)**
+- **Artefatos Sustentáveis (SeloS)**
+- **Experimentos Reprodutíveis (SeloR)**
+
+---
+
+## 3. Informações Básicas
+
+### Ambiente de Execução
+
+- **Sistema Operacional**: Linux (testado em openSUSE Leap 15.4)
+- **Arquitetura**: x86_64
+- **Linguagem**: Python 3.6 ou superior
+- **Memória RAM recomendada**: ≥ 2 GB
+- **Armazenamento**: ≥ 500 MB livres
+- **Tempo médio de execução**:
+  - Teste mínimo: < 1 minuto
+  - Experimentos completos: até alguns minutos, dependendo dos parâmetros avaliados
+
+Obs.: Não é necessário GPU ou acesso à internet após a instalação.
+
+---
+
+## 4. Dependências
+
+As dependências externas são mínimas:
+
+- **Python** ≥ 3.6
+- **matplotlib** ≥ 3.3.4
+
+Instalação da dependência principal:
+
+```bash
+    pip install matplotlib
+```
+
+Obs.: Demais bibliotecas utilizadas (tais como csv, random, math, argparse) fazem parte da biblioteca padrão do Python.
+
+---
+
+## 5. Preocupações com Segurança
+
+Este artefato não apresenta riscos de segurança aos avaliadores. O código não executa comandos privilegiados, não acessa a rede e não manipula dados sensíveis. Todos os experimentos são executados localmente em modo usuário.
+
+---
+
+## 6. Instalação
+
+1. Clone o repositório:
+```bash
+    git clone https://github.com/danilo-avilar/NetMaintenance.git
+    cd <repositorio>
+```
+
+2. Instale as dependências:
+```bash
+    pip install matplotlib
+```
+Após esses passos, o artefato estará pronto para execução.
+
+---
+
+## 7. Teste Mínimo
+
+Permite verificar rapidamente o funcionamento do simulador.
+
+### Comando
+
+```bash
+    python3 sc.py --total_nodes 50 --active_size 4 --passive_size 6 --fail_mean 0.3 --fail_std 0.1 --max_cycles 30 --debug_nodes 0 1 2 --csv_filename res.csv --save_graphs
+```
+ou
+```bash
+    python3 sc.py --help
+```
+para ajuda.
+
+### Resultado Esperado
+
+Execução sem erros, incluindo a impressão no terminal do tempo de convergência e a geração de arquivos `.csv`, gráficos `.png` e arquivo de debug `.txt`. A presença dessas informações confirma que o artefato está funcional.
+
+### Descrição Geral
 
 O script `sc.py` é reponsável pela execução da simulação de funcionamento da camanda de conectividade. Cada nó da rede (simulado como um objeto `Node`) mantém duas listas dinâmicas:
 - **Active View (ativos)** → vizinhos conectados diretamente, com quem o nó troca mensagens de dados.
@@ -18,9 +150,7 @@ A cada **ciclo**:
 4. Uma fração (30%) da Passive View é **trocada com um vizinho ativo** (operação de *shuffle*), promovendo diversidade.  
 5. Métricas são registradas e gráficos atualizados ao final de cada ciclo.
 
----
-
-## Parâmetros importantes
+### Parâmetros importantes
 
 | Parâmetro | Descrição |
 |------------|------------|
@@ -34,9 +164,8 @@ A cada **ciclo**:
 | `csv_filename` | Nome do arquivo CSV gerado com os resultados. |
 | `save_graphs` | Indica se os gráficos devem ser salvos automaticamente. |
 
----
 
-## Modo Debug
+### Modo Debug
 
 O modo de depuração (debug) mostra em detalhes o comportamento de até **três nós** selecionados (`debug_nodes`), evitando sobrecarga visual.  
 Em cada ciclo, para esses nós são exibidos:
@@ -52,9 +181,7 @@ Em cada ciclo, para esses nós são exibidos:
   - Mensagens no ciclo
   - Total acumulado de mensagens
 
----
-
-## Estrutura de Saída
+### Estrutura de Saída
 
 Após execução, são gerados:
 **1. Arquivo CSV** (`res.csv`) contendo:
@@ -82,30 +209,7 @@ Após execução, são gerados:
    - `grafico_mensagens_acumuladas.png`: Histograma das mensagens acumuladas por nó.
    - `grafico_mensagens.png`: Quantidade de mensagens trocadas por ciclo.
 
----
-
-## Requisitos e Execução
-
-### Requisitos
-- Python **3.6.15** ou superior.
-- Bibliotecas:
-  ```bash
-  pip install matplotlib
-  ```
-
-### Execução
-  ```bash
-  python3 sc.py --total_nodes 50 --active_size 4 --passive_size 6 --fail_mean 0.3 --fail_std 0.1 --max_cycles 30 --debug_nodes 0 1 2 --csv_filename res.csv --save_graphs
-  ```
-ou
-  ```bash
-  python3 sc.py --help
-  ```
-para ajuda.
-
----
-
-## Interpretação dos resultados
+### Interpretação dos resultados
 **1. Tempo de convergência**
 Indica o ciclo em que todos os nós atingiram o número máximo de vizinhos ativos. Impresso no terminal como:
   ```bash
@@ -122,62 +226,63 @@ Mede quantos vizinhos diferentes já passaram pela Passive View de cada nó. Em 
 Mostra quantos nós terminaram com X vizinhos ativos. Idealmente, todos devem estar no valor alvo (`active_size`).
 
 ---
----
 
-# Scripts de Apoio
+## 8. Experimentos e Reivindicações
 
-Criados para automatização dos testes e sintetização dos resultados obtidos.
+Esta seção descreve como reproduzir as principais reivindicações do artigo.
 
----
+### Reivindicação #1
 
-## Teste Automatizado
+A camada NetMaintenance mantém alta taxa de convergência sob regimes de falhas baixa a moderada.
 
-O script `run.py` realiza uma execução automatizada variando a quantidade de nós da rede e permitindo também variar o valor médio da distribuição de probabilidade de falha. Para isso cada cenário é repetido por **30 vezes** para cálculo de médias e desvios padrão.  
+#### Procedimento
 
----
+Execute o script automatizado:
+```bash
+    python3 run.py
+```
 
-## Estrutura de Saída
+O script varia o número de nós da rede e o valor médio da distribuição de probabilidade de falha
+$$
+    \mu_f = 0.10 + (k \times 0.05),\; k \in \{0,1,\ldots,9\}
+$$
+e repete cada cenário **30 vezes** para cálculo de médias e desvios padrão.
+
+Após execução, uma estrutura de diretórios é gerada de acordo com o seguinte formato:
 ```
   .
   └── n10
-      └── prob0_1
+      └── prob0_1
           └── rep1
               ├── debug.txt
-              ├── grafico_distribuicao.png
-              ├── grafico_diversidade_passiva.png
-              ├── grafico_media_ativos.png
-              ├── grafico_mensagens_acumuladas.png
-              ├── grafico_mensagens_acumuladas_por_no_debug.png
-              ├── grafico_mensagens.png
-              ├── res_acc.csv
-              └── res.csv
+              ├── grafico_distribuicao.png
+              ├── grafico_diversidade_passiva.png
+              ├── grafico_media_ativos.png
+              ├── grafico_mensagens_acumuladas.png
+              ├── grafico_mensagens_acumuladas_por_no_debug.png
+              ├── grafico_mensagens.png
+              ├── res_acc.csv
+              └── res.csv
 
 ```
-
-Após execução, uma estrutura de diretórios é gerada de acordo com o seguinte formato:
    - Diretórios nXX → XX = {10, 20, ..., XX}:  quantidade de nós.
    - Subdiretórios prob0_Y → Y = {1, 2, ..., Y}: correspondem ao valor médio da probabilidade de falha {0.1, 0.2, ..., 0.Y}.
    - Subdiretórios rep_W → W = {1, 2, ..., W}: correspondem a repetição em questão do cenário de teste.
         - Dentro de cada subdiretório rep_W, os resultados obtidos a partir da execução de `sc.py` são salvos.
 
----
-
-## Execução
-
-  ```bash
-  python3 run.py
-  ```
----
-
-## Sintetização de Resultados
-
+Em seguida, execute o script:
+```bash
+    python3 analysis.py
+```
 O script `analysis.py` produz uma visão consolidada dos resultados obtidos a partir do teste automatizado, comparando a quantidade de nós da rede vs probabilidade de falha.
 
 O parâmetro `modo_graficos`, configurado em hardcode, permite determinar se os gráficos serão criados separados por nó (`modo_graficos = "separado"`) ou um único arquivo com todos os nós unificados (`modo_graficos = "junto"`).
 
----
+#### Resultado Esperado
 
-## Estrutura de Saída
+O arquivo `analise_resultados.csv` apresenta alta taxa de convergência (Convergiu_pct) para valores baixos e moderados da probabilidade média de falha e tempos médios de convergência compatíveis com os apresentados no artigo.
+
+#### Estrutura de Saída
 
 Após execução, são gerados:
 **1. Arquivo CSV** (`analise_resultados.csv`) contendo:
@@ -192,13 +297,37 @@ Após execução, são gerados:
 **2. Gráficos Unificados**:
    - `ativos_ciclo0`: Média de nós ativos no primeiro ciclo.
    - `tempo_convergencia`: Tempo médio de convergência (em ciclos).
+
+### Reivindicação #2
+
+A troca parcial da lista passiva promove diversidade estrutural da vizinhança.
+
+#### Procedimento
+
+Durante a execução de `sc.py`, observe o gráfico `grafico_diversidade_passiva.png`. A cada ciclo, uma fração fixa (30%) da Passive View é trocada com vizinhos ativos (shuffle).
+
+#### Resultado Esperado
+
+Crescimento monotônico da diversidade média da lista passiva e indicação de renovação contínua de contatos, conforme discutido no artigo.
+
+### Reivindicação #3
+
+A recomposição da vizinhança ativa ocorre rapidamente após falhas.
+
+#### Procedimento
+
+Analise os aquivos `grafico_media_ativos.png` e `histograma grafico_distribuicao.png`.
+
+#### Resultado Esperado
+
+Recuperação rápida da média de vizinhos ativos até o valor alvo (`active_size`) e distribuição final concentrada no grau desejado.
+
 ---
 
-## Execução
+## 9. Licença
 
-  ```bash
-  python3 analysis.py
-  ```
+Este projeto é distribuído sob a licença MIT.
+
 ---
 ---
 
